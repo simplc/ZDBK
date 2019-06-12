@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>知道百科</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+</head>
+
+<body>
+
+<div style="margin: 250px; white-space:nowrap;" align="center">
+    <div align="center">
+        <img src="/static/figs/baidu_logo.jpg" width="100px" height="100px" />
+        <h1>知道百科搜索</h1><br/>
+    </div>
+    <form action="/s" method="GET">
+        <input type="text" name="keyword" placeholder="输入" style="width: 600px;"/>
+        <input type="submit" value="搜索" class="button" style="width: 120px;"/>
+        <input type="hidden" name="page" value=1></input>
+    </form>
+</div>
+
+</body>
+
+</html>

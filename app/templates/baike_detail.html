@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>百科</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+	<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body style="background-color: #f5f5f5">
+
+<div id="bk_zd_page">
+
+    <div id="bk_title">
+        <p class="weight-bold">{{ bk_doc.title }}</p>
+    </div>
+
+    <div id="bk_desc">
+        <p>{{ bk_doc.description }}</p>
+    </div>
+
+    <div id="bk_items" class="container font-12">
+        <div class="row">
+            <dl class="dl-horizontal col-sm-6">
+                {% for i in range(bk_doc.items|length) %}
+                    {% if i % 2 == 0 %} 
+                        <dt>{{ bk_doc.items[i].item_title }}</dt>
+                        <dd>{{ bk_doc.items[i].text }}</dd>
+                    {% endif %}
+                {% endfor %}
+            </dl>  
+            <dl class="dl-horizontal col-sm-6">
+                {% for i in range(bk_doc.items|length) %}
+                    {% if i % 2 == 1 %} 
+                        <dt>{{ bk_doc.items[i].item_title }}</dt>
+                        <dd>{{ bk_doc.items[i].text }}</dd>
+                    {% endif %}
+                {% endfor %}
+            </dl>
+        </div>  
+    </div>
+
+    {% if bk_doc.pictures %}
+        <div class="column">
+        {% for picture in bk_doc.pictures %}
+            <div class="img row">
+                <img src="{{ picture.picture_url }}" alt="{{ picture.picture_title }}"/>
+                {% if picture.picture_title != "summary_pic" %}
+                    <p class="font-13 font-italic align-center">{{ picture.picture_title }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+    
+    {% if bk_doc.sections %}
+        {% for section in bk_doc.sections %}
+            {% if section.section_title.endswith('#1') %}
+            <div id="bk_sec_title1">
+                <p>{{ section.section_title[:-2] }}</p>
+            </div>
+            {% elif section.section_title.endswith('#2') %}
+            <div id="bk_sec_title2">
+                    <p>{{ section.section_title[:-2] }}</p>
+                </div>    
+            {% endif %}
+            {% if section.text %}
+                <div id="bk_sec_text">
+                    {% set text_list = section.text.split('\n') %}
+                    {% for t in text_list %}
+                        {% if not t.startswith('[') %}
+                            <p>{{ t }}</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+</div>
+
+</body>
