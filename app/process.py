@@ -3,17 +3,18 @@ from string import punctuation as eng_punc
 from zhon.hanzi import punctuation as ch_punc
 import jieba
 import re
-
-stopwords_fn = 'app/stopwords.txt'
+from .models import WordIndex
+from . import db
 
 # https://github.com/goto456/stopwords/blob/master/百度停用词表.txt
 stopWords = []
-with open(stopwords_fn) as f:
+with open('app/stopwords.txt') as f:
     for line in f:
         stopWords.append(line.strip())
 
-def tokenize(text, stop=False):
+def tokenize(text, stop=True):
     text = re.sub('\s', '', text)
+    text = re.sub('[#]\d', '', text)
     text = list(jieba.cut_for_search(text))
     tokenized_text = []
     stop_list = []
@@ -31,8 +32,14 @@ def process(text):
     return CT(words)
 
 if __name__=='__main__':
-    text = '''
-        我  是否 吃了米饭和米饭。
-        你呢？
-    	'''
-    print(process(text))
+    for word in stopWords:
+        q = WordIndex.query.filter_by(word=word).first()
+        if q is not None:
+            db.session.delete(q)
+    db.session.commit()
+
+    # text = '''
+    #     我  是否 吃了米饭和米饭。
+    #     你呢？
+    # 	'''
+    # print(process(text))

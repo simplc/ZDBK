@@ -12,6 +12,7 @@ from .search import search, get_page
 
 
 @app.route('/')
+@app.route('/#')
 @app.route('/index')
 def index():
     return render_template('index.html')
@@ -21,8 +22,10 @@ def index():
 def result():
     if request.method == 'GET':
         kw = request.args['keyword']
+        region = request.args['search-opt']
+
         cur_page_id = int(request.args['page'].strip('/'))
-        results = search(kw)
+        results = search_wrapper(kw, region)
         total_num = len(results)
 
         (litem, ritem), total_num_pages, (lpage, rpage) = naive_pagination(cur_page_id, len(results))
@@ -30,7 +33,7 @@ def result():
         results = [('zd' if isinstance(res, ZhiDaoDoc) else 'bk', res) for res in results[litem:ritem]]
 
         return render_template('search_result.html', kw=kw, results=results, num=total_num,
-            cur=cur_page_id, total=total_num_pages, lp=lpage, rp=rpage)
+            cur=cur_page_id, total=total_num_pages, lp=lpage, rp=rpage, region=region)
 
 
 @app.route('/zd_detail/<id>/')
@@ -44,7 +47,7 @@ def bk_detail(id):
     return render_template('baike_detail.html', bk_doc=bk_doc)
 
 def naive_pagination(cur_page_id, num_items):
-    items_per_page = 10
+    items_per_page = 20
     page_gap = 3
     visiable_num_pages = 6
     left_item_id = (cur_page_id - 1) * items_per_page
@@ -56,6 +59,9 @@ def naive_pagination(cur_page_id, num_items):
 
     return (left_item_id, right_item_id), total_num_pages, (left_page_id, right_page_id)
 
+def search_wrapper(kw, region):
+    region_dict = {'全部':'all', '百科-标题':'baike_title', '百科-内容':'baike_section', '知道-问题':'zhidao_question', '知道-回答':'zhidao_answer'}
+    return search(kw, region=region_dict[region])
 
 if __name__ == '__main__':
     app.debug = True

@@ -12,4 +12,3 @@ db = SQLAlchemy(app)
 from app import view
 
 app.debug = True
-app.run()

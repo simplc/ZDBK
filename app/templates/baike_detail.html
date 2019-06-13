@@ -19,10 +19,13 @@
         <p class="weight-bold">{{ bk_doc.title }}</p>
     </div>
 
-    <div id="bk_desc">
+    <div id="bk_zd_desc">
         <p>{{ bk_doc.description }}</p>
     </div>
 
+    <hr/>
+
+    {% if bk_doc.items %}
     <div id="bk_items" class="container font-12">
         <div class="row">
             <dl class="dl-horizontal col-sm-6">
@@ -43,9 +46,11 @@
             </dl>
         </div>  
     </div>
+    <hr/>
+    {% endif %}
 
     {% if bk_doc.pictures %}
-        <div class="column">
+        <div class="test column">
         {% for picture in bk_doc.pictures %}
             <div class="img row">
                 <img src="{{ picture.picture_url }}" alt="{{ picture.picture_title }}"/>
@@ -65,15 +70,15 @@
             </div>
             {% elif section.section_title.endswith('#2') %}
             <div id="bk_sec_title2">
-                    <p>{{ section.section_title[:-2] }}</p>
-                </div>    
+                <p>{{ section.section_title[:-2] }}</p>
+            </div>
             {% endif %}
             {% if section.text %}
                 <div id="bk_sec_text">
                     {% set text_list = section.text.split('\n') %}
                     {% for t in text_list %}
                         {% if not t.startswith('[') %}
-                            <p>{{ t }}</p>
+                            <p> {{ t }}</p>
                         {% endif %}
                     {% endfor %}
                 </div>

@@ -1,6 +1,7 @@
-from .models import WordIndex, BaiKeDoc, ZhiDaoDoc
-from .process import process, stopWords
 from math import log10
+
+from .models import WordIndex, BaiKeDoc, ZhiDaoDoc
+from .process import process
 
 
 def tf_idf(words, regions):
@@ -29,8 +30,6 @@ def tf_idf(words, regions):
         dic = tf[term]
         for docid, freq in dic.items():
             w = (1+log10(freq)) * (log10(N/len(dic)))
-            if term in stopWords:
-                w *= 0.3
             weight[docid] += w
 
     doc_list = []
@@ -53,13 +52,19 @@ def search(text, region='all'):
     words = process(text)
     if region == 'all':
         return tf_idf(words, ['baike_title', 'baike_section', 'zhidao_question', 'zhidao_answer'])
-    elif region != 'picture':
+    elif region in ['baike_title', 'baike_section', 'zhidao_question', 'zhidao_answer']:
         return tf_idf(words, [region])
     else:
-        # TODO
-        doc_list = tf_idf(words, ['baike_title', 'baike_section', 'zhidao_question', 'zhidao_answer'])
-        url_list = []
-        return url_list
+        print('no such region!!!')
+        assert 0
+
+    # else:
+    #     url_list = []
+    #     doc_list = tf_idf(words, ['baike_title', 'baike_section', 'zhidao_question', 'zhidao_answer'])
+    #     for doc in doc_list:
+    #         for pic in doc.pictures:
+    #             url_list.append(pic.picture_url)
+    #     return url_list
 
 
 def get_page(id):
@@ -70,9 +75,10 @@ def get_page(id):
 
 
 if __name__ == '__main__':
-    result = search('皇帝')
+    result = search('中国，科学家')#, region='baike_title')
     for item in result:
         if isinstance(item, BaiKeDoc):
-            print(item.description)
+            print(item.title, item.description)
         else:
             print(item.question)
+
