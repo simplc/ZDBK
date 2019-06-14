@@ -16,11 +16,11 @@
 
 <div style="margin: 250px; white-space:nowrap;" align="center">
     <div align="center">
-        <img src="/static/figs/baidu_logo.jpg" width="100px" height="100px" />
-        <h1>知道百科搜索</h1><br/>
+        <img src="/static/figs/home_page_logo.png"  height="100px" /> <br/><br/>
+        <!-- <h1>知道百科搜索</h1><br/> -->
     </div>
     <form action="/s" method="GET">
-        <input type="text" name="keyword" placeholder="输入" style="width: 600px;"/>
+        <input type="text" name="keyword" placeholder="请输入你要搜索的关键词/问题" style="width: 600px;"/>
         <input type="submit" value="搜索" class="button" style="width: 120px;"/>
         <div class="dropdown inline-block">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -34,6 +34,8 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#">知道-问题</a>
                 <a class="dropdown-item" href="#">知道-回答</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">图片</a>
             </div>
             <script type="text/javascript">
                 $('#search-opt a').on('click', function(){

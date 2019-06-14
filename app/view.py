@@ -28,13 +28,16 @@ def result():
         results = search_wrapper(kw, region)
         total_num = len(results)
 
-        (litem, ritem), total_num_pages, (lpage, rpage) = naive_pagination(cur_page_id, len(results))
-
-        results = [('zd' if isinstance(res, ZhiDaoDoc) else 'bk', res) for res in results[litem:ritem]]
-
-        return render_template('search_result.html', kw=kw, results=results, num=total_num,
-            cur=cur_page_id, total=total_num_pages, lp=lpage, rp=rpage, region=region)
-
+        if total_num > 0 and isinstance(results[0], str):
+            (litem, ritem), total_num_pages, (lpage, rpage) = naive_pagination(cur_page_id, len(results), 60)
+            results = results[litem:ritem]
+            return render_template('img_detail.html', kw=kw, results=results, num=total_num,
+                cur=cur_page_id, total=total_num_pages, lp=lpage, rp=rpage, region=region)
+        else:
+            (litem, ritem), total_num_pages, (lpage, rpage) = naive_pagination(cur_page_id, len(results), 20)
+            results = [('zd' if isinstance(res, ZhiDaoDoc) else 'bk', res) for res in results[litem:ritem]]
+            return render_template('search_result.html', kw=kw, results=results, num=total_num,
+                cur=cur_page_id, total=total_num_pages, lp=lpage, rp=rpage, region=region)
 
 @app.route('/zd_detail/<id>/')
 def zd_detail(id):
@@ -46,8 +49,7 @@ def bk_detail(id):
     bk_doc = get_page(int(id))  # BaiKeDoc
     return render_template('baike_detail.html', bk_doc=bk_doc)
 
-def naive_pagination(cur_page_id, num_items):
-    items_per_page = 20
+def naive_pagination(cur_page_id, num_items, items_per_page):
     page_gap = 3
     visiable_num_pages = 6
     left_item_id = (cur_page_id - 1) * items_per_page
@@ -60,7 +62,14 @@ def naive_pagination(cur_page_id, num_items):
     return (left_item_id, right_item_id), total_num_pages, (left_page_id, right_page_id)
 
 def search_wrapper(kw, region):
-    region_dict = {'全部':'all', '百科-标题':'baike_title', '百科-内容':'baike_section', '知道-问题':'zhidao_question', '知道-回答':'zhidao_answer'}
+    region_dict = {
+        '全部':'all',
+        '百科-标题':'baike_title',
+        '百科-内容':'baike_section',
+        '知道-问题':'zhidao_question',
+        '知道-回答':'zhidao_answer',
+        '图片': 'picture'
+    }
     return search(kw, region=region_dict[region])
 
 if __name__ == '__main__':

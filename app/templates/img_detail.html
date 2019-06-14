@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>百科知道图片</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</script>
+</head>
+
+<body>
+
+    <div class="mt-4" align="center">
+
+        <div>
+            <form action="/s" method="GET">
+                <input type="text" name="keyword" value="{{ kw }}" style="width: 600px;"/>
+                <input type="submit" value="搜索" class="button w-10"/>
+                <div class="dropdown inline-block">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ region }}
+                        </button>
+                        <div id="search-opt" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#">全部</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">百科-标题</a>
+                            <a class="dropdown-item" href="#">百科-内容</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">知道-问题</a>
+                            <a class="dropdown-item" href="#">知道-回答</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">图片</a>
+                        </div>
+                        <script type="text/javascript">
+                            $('#search-opt a').on('click', function(){
+                                document.getElementById('dropdownMenuButton').innerHTML = $(this).text();
+                                document.getElementById('search-opt-input').value = $(this).text();
+                            });
+                        </script>
+                    </div>
+                    <input type="hidden" name="search-opt" id="search-opt-input" value="{{ region }}"></input>
+                    <input type="hidden" name="page" value=1></input>
+            </form>
+        </div>
+
+        <div class="mt-4">
+            <div class="font-13 font-italic">
+                <p>有关“{{ kw }}”的搜索结果共{{ num }}条</p>
+            </div>
+<!-- 
+            <div class="container">
+                <div class="row">
+                    {% for i in range(3) %}
+                    <div class="col-lg-4 col-md-12 mb-4">
+                        {% for j in range(i, results|length, 3) %}
+                        <img src="{{ results[j] }}" class="img-fluid mb-4" alt="">
+                        {% endfor %}                
+                    </div>
+                    {% endfor %}
+                </div>
+            </div> -->
+            <div class="w-screen mt-4">
+                    <div class="column">
+                        <div class="row-lg-4 row-md-12 mb-4">
+                            {% for j in range(results|length) %}
+                            <img src="{{ results[j] }}" class="img-fluid mb-4" alt="" height="240px">  
+                            {% endfor %}                
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+        {% if results %}
+        <div class="container mt-4 mb-4">
+            <ul class="pagination justify-content-center">
+                {% if cur == 1 %}
+                <li class="page-item active"><span class="page-link">首页</span></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="s?keyword={{ kw }}&search-opt={{ region }}&page=1">首页</a></li>
+                {% endif %}
+                {% if lp != 1 %}
+                <li class="page-item"><span class="page-link">...</span></li>
+                {% endif %}
+                {% for i in range(lp, rp) %}
+                    {% if i == cur %}
+                    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link" href="s?keyword={{ kw }}&search-opt={{ region }}&page={{ i }}">{{ i }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                {% if cur != total %}
+                <li class="page-item"><a class="page-link" href="s?keyword={{ kw }}&search-opt={{ region }}&page={{ cur+1 }}"> &gt; </a></li>
+                {% else %}
+                <li class="page-item"><span class="page-link">&gt</span></li>
+                {% endif %}
+                <li class="page-item"><span class="page-link">共{{ total }}页</span></li>
+            </ul>
+        </div>
+        {% endif %}
+
+    </div>
+
+</body>

@@ -10,6 +10,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/0aad336876.js"></script>
 </head>
 
 <body>
@@ -18,7 +19,7 @@
 
     <div>
         <form action="/s" method="GET">
-            <input type="text" name="keyword" placeholder="{{ kw }}" style="width: 600px;"/>
+            <input type="text" name="keyword" value="{{ kw }}" style="width: 600px;"/>
             <input type="submit" value="搜索" class="button w-10"/>
             <div class="dropdown inline-block">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -32,6 +33,8 @@
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="#">知道-问题</a>
                         <a class="dropdown-item" href="#">知道-回答</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">图片</a>
                     </div>
                     <script type="text/javascript">
                         $('#search-opt a').on('click', function(){
@@ -40,7 +43,7 @@
                         });
                     </script>
                 </div>
-                <input type="hidden" name="search-opt" id="search-opt-input" value="全部"></input>
+                <input type="hidden" name="search-opt" id="search-opt-input" value="{{ region }}"></input>
                 <input type="hidden" name="page" value=1></input>
         </form>
     </div>
@@ -57,7 +60,7 @@
         {% for type, result in results %}
             {% if type == 'zd' %}
             <!-- zhidao item -->
-            <div class="mt-2">
+            <div class="mt-4">
                 <div class="font-20 lh-24">
                     <span style="font-size: 18px">[知道]</span>&emsp;<a href="{{ url_for('zd_detail', id=result.doc_id )}}">{{ result.question }}</a>
                 </div>
@@ -65,12 +68,13 @@
                     <p class="display-part">{{ result.answers[0].answer }}</p>
                 </div>
                 <div class="font-13 lh-16 mt-1">
-                    <p>{{ result.answers[0].answer_time }}&emsp;回答者:{{ result.answers[0].user_name }}&emsp;{{ result.answers[0].likes }}</p>
+                    <p><i class="far fa-calendar-alt"></i>&nbsp;{{ result.answers[0].answer_time }}&emsp;<i class="far fa-user"></i>&nbsp;{{ result.answers[0].user_name }}
+                        &emsp;<i class="far fa-thumbs-up"></i>&nbsp;{{ result.answers[0].likes }}&emsp;<i class="far fa-thumbs-down"></i>&nbsp;{{ result.answers[0].dislikes }}</p>
                 </div>
             </div>
             {% elif type == 'bk' %}
             <!-- baike item -->
-            <div class="mt-2">
+            <div class="mt-4">
                 <div class="font-20 lh-24">
                     <span style="font-size: 18px">[百科]</span>&emsp;<a href="{{ url_for('bk_detail', id=result.doc_id) }}" >{{ result.title }}</a>
                 </div>
@@ -83,6 +87,7 @@
         
     </div>
 
+    {% if results %}
     <div class="container mt-4 mb-4">
         <ul class="pagination justify-content-center">
             {% if cur == 1 %}
@@ -108,6 +113,7 @@
             <li class="page-item"><span class="page-link">共{{ total }}页</span></li>
         </ul>
     </div>
+    {% endif %}
 
 </div>
 
