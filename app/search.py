@@ -29,7 +29,7 @@ def tf_idf(words, regions):
     for term in words:
         dic = tf[term]
         for docid, freq in dic.items():
-            w = (1+log10(freq)) * (log10(N/len(dic)))
+            w = (1+log10(freq)) * (log10(20000/len(dic)))
             weight[docid] += w
 
     doc_list = []
@@ -52,8 +52,10 @@ def search(text, region='all'):
     words = process(text)
     if region == 'all':
         return tf_idf(words, ['baike_title', 'baike_section', 'zhidao_question', 'zhidao_answer'])
-    elif region in ['baike_title', 'baike_section', 'zhidao_question', 'zhidao_answer']:
+    elif region in ['baike_title', 'zhidao_question', 'zhidao_answer']:
         return tf_idf(words, [region])
+    elif region in ['baike_section']:
+        return tf_idf(words, ['baike_title', 'baike_section'])
     else:
         url_list = []
         doc_list = tf_idf(words, ['baike_title', 'baike_section', 'zhidao_question', 'zhidao_answer'])
@@ -76,7 +78,7 @@ def get_page(id):
 
 
 if __name__ == '__main__':
-    result = search('中国，科学家')#, region='baike_title')
+    result = search('奥运会', region='baike_section')
     for item in result:
         if isinstance(item, BaiKeDoc):
             print(item.title, item.description)
